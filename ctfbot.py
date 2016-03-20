@@ -1,5 +1,5 @@
 import requests, json, sys
-
+from datetime import date
 from settings import SERVER, PORT, CHANNEL, NICKNAME
 from twisted.internet import defer, endpoints, protocol, reactor, task
 from twisted.python import log
@@ -11,6 +11,8 @@ class CTFTimerBot(irc.IRCClient):
     
     # API URLS
     upcomming_ctfs = "https://ctftime.org/api/v1/events/"
+    top10_teams = "https://ctftime.org/api/v1/top/"
+    teams_info = "https://ctftime.org/api/v1/teams/"
 
     def __init__(self):
         self.deferred = defer.Deferred()
@@ -52,9 +54,16 @@ class CTFTimerBot(irc.IRCClient):
         """
         response = requests.get(self.upcomming_ctfs)
         for event in response.json():
-            event_info = "Name: {}, Format: {}, Date: {} - {}, Weight: {} ".format(str(event['title']), str(event['format']), str(event['start']), str(event['finish']), str(event['weight']))
+            event_info = "Name: {}, Format: {}, Date: {} - {}, Weight: {} ".format(event['title'].encode("utf-8"), event['format'].encode("utf-8"), event['start'], event['finish'], event['weight'])
             self._sendMessage(event_info, self.factory.channel)
         return 'nn'
+    
+    def command_top10(self, rest):
+        response = requests.get(self.top10_teams)
+        for team in response.json()[str(date.today().year)]:
+            team_info = "Name: {}, Points: {}".format(team['team_name'].encode("utf-8"), team['points'])
+            self._sendMessage(team_info, self.factory.channel)
+        return "tt"
 
     def command_ping(self, rest):
         return 'Pong.'
