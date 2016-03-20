@@ -60,7 +60,14 @@ class CTFTimerBot(irc.IRCClient):
     
     def command_top10(self, rest):
         response = requests.get(self.top10_teams)
-        for team in response.json()[str(date.today().year)]:
+        year = rest.partition(' ')
+
+        if not year[0] == '':
+            teams = response.json()[str(year[0])]
+        else:
+            teams = response.json()[str(date.today().year)]
+
+        for team in teams:
             team_info = "Name: {}, Points: {}".format(team['team_name'].encode("utf-8"), team['points'])
             self._sendMessage(team_info, self.factory.channel)
         return "tt"
