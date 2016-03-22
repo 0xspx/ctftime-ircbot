@@ -1,5 +1,5 @@
-SERVER="irc.freenode.net"
+SERVER="irc.kernelpool.net"
 PORT=6667
-CHANNEL="#denkei"
+CHANNEL="#kp"
 NICKNAME="ctftimer"
 

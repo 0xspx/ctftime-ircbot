@@ -1,0 +1,10 @@
+[Unit]
+Description=CTFTimer daemon service
+Documentation=man:foo(1)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python /opt/ctftimer/ctfbot.py 2>&1 >>  /var/log/ctftimer/ctftimer.log
+
+[Install]
+WantedBy=multi-user.target
